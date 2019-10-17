@@ -101,9 +101,9 @@ def autocorrect(user_word, valid_words, diff_function, limit):
     # BEGIN PROBLEM 5
     if user_word in valid_words:
         return user_word
-    min_diff = min(valid_words, key = diff_function(user_word, valid_words, limit)
-    if diff_function(user_word, min_diff, limit) <= limit: 
-        return min_diff
+    min_word = min(valid_words, key = lambda x: diff_function(user_word, x, limit))
+    if diff_function(user_word, min_word, limit) <= limit:
+        return min_word
     else:
         return user_word       
     # END PROBLEM 5
