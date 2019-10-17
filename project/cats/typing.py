@@ -115,7 +115,16 @@ def swap_diff(start, goal, limit):
     their lengths.
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    def helper(start, goal, limit, cnt):
+        if cnt > limit:
+            return cnt
+        if start == '' or goal == '':
+            return cnt + abs(len(start)-len(goal))
+        if start[0] == goal[0]:
+            return helper(start[1:], goal[1:], limit, cnt)
+        else:
+            return helper(start[1:], goal[1:], limit, cnt+1)
+    return helper(start, goal, limit, 0)
     # END PROBLEM 6
 
 def edit_diff(start, goal, limit):
