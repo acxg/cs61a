@@ -129,25 +129,46 @@ def swap_diff(start, goal, limit):
 
 def edit_diff(start, goal, limit):
     """A diff function that computes the edit distance from START to GOAL."""
-    assert False, 'Remove this line'
+    def dif(start, goal, cnt):
+        """function that calculates the distance between two words"""
+        if start == '' or goal == '': 
+            return cnt + abs(len(start) - len(goal))
+        elif start[0] == goal[0]:
+            return dif(start[1:], goal[1:], cnt)
+        else:
+            return dif(start[1:], goal[1:], cnt+1)
 
-    if ______________: # Fill in the condition
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+    def helper(start, goal, limit, cnt):
+        if cnt > limit or start == goal: 
+            return cnt
+        min_change = min(rm, ad, rep, key = lambda f: f(start, goal)[1])
+        if start == '' or goal == '' or start[0] != goal[0]:
+            start = min_change(start, goal)[0]
+            return helper(start, goal, limit, cnt+1)
+        else:
+            return helper(start[1:], goal[1:], limit, cnt)
+            
+    def rm(start, goal):
+        if start != '':
+            start = start[1:]
+            return start, dif(start, goal, 0)
+        else: 
+            return start, 2**32-1
+    def ad(start, goal):
+        if goal != '':
+            start = goal[0]+start
+            return start, dif(start, goal, 0)
+        else:
+            return start, 2**23-1
 
-    elif ___________: # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+    def rep(start, goal):
+        if goal != '':
+            start = goal[0] + start[1:]
+            return start, dif(start, goal, 0)
+        else: 
+            return start, 2**23-1
 
-    else:
-        add_diff = ...  # Fill in these lines
-        remove_diff = ... 
-        substitute_diff = ... 
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+    return helper(start, goal, limit, 0)
 
 
 def final_diff(start, goal, limit):
@@ -165,7 +186,21 @@ def final_diff(start, goal, limit):
 def report_progress(typed, prompt, id, send):
     """Send a report of your id and progress so far to the multiplayer server."""
     # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
+    def send(dic):
+        print('ID:', dic['id'],'Progress:',dic['progress'])
+    cnt = 0
+    min_len = min(len(typed),len(prompt))
+    for i in range(min_len):
+        if typed[i] == prompt[i]:
+            cnt += 1
+        else:
+            break
+    progress = 1.0*(cnt/len(prompt))
+    dic = {}
+    dic['id'] = id
+    dic['progress'] = progress
+    send(dic)
+    return progress
     # END PROBLEM 8
 
 
@@ -186,14 +221,29 @@ def fastest_words(word_times, margin=1e-5):
     assert all(len(times) == n_words + 1 for times in word_times)
     assert margin > 0
     # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
+    res = []
+    for j in range(n_players):
+        res.append([])
+    for i in range(1,n_words+1):
+        cur_word = word(word_times[0][i])
+        fast_time = elapsed_time(word_times[0][i])-elapsed_time(word_times[0][i-1])
+        for j in range(1,n_players):
+            cur_time = elapsed_time(word_times[j][i])-elapsed_time(word_times[j][i-1])
+            if fast_time > cur_time:
+                fast_time = cur_time
+        t_w = fast_time + margin
+        for j in range(n_players):
+            dur = elapsed_time(word_times[j][i]) - elapsed_time(word_times[j][i-1])
+            if dur < t_w:
+                res[j].append(cur_word)
+    return res
     # END PROBLEM 9
 
 
 def word_time(word, elapsed_time):
     """A data abstrction for the elapsed time that a player finished a word."""
     return [word, elapsed_time]
-
+    
 
 def word(word_time):
     """An accessor function for the word of a word_time."""
@@ -205,7 +255,7 @@ def elapsed_time(word_time):
     return word_time[1]
 
 
-enable_multiplayer = False  # Change to True when you
+enable_multiplayer = True  # Change to True when you
 
 
 ##########################
