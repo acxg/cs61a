@@ -150,7 +150,11 @@ def totals_tree(m):
           3
           2
     """
-    "*** YOUR CODE HERE ***"
+    if is_weight(m):
+        return tree(total_weight(m),[])
+    else:
+        return tree(total_weight(m),\
+                [totals_tree(end(left(m))),totals_tree(end(right(m)))])
 
 def replace_leaf(t, old, new):
     """Returns a new tree where every leaf value equal to old has
@@ -181,7 +185,11 @@ def replace_leaf(t, old, new):
     >>> laerad == yggdrasil # Make sure original tree is unmodified
     True
     """
-    "*** YOUR CODE HERE ***"
+    if is_leaf(t) and label(t) == old:
+        label(t) == new
+    if is_tree(t):
+        for branch in branches(t):
+            return replace_leaf(branch, old, new)
 
 def make_fib():
     """Returns a function that returns the next Fibonacci number
@@ -276,7 +284,7 @@ def make_joint(withdraw, old_password, new_password):
     >>> make_joint(w, 'hax0r', 'hello')
     "Your account is locked. Attempts: ['my', 'secret', 'password']"
     """
-    "*** YOUR CODE HERE ***"
+     
 
 
 
