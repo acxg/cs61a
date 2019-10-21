@@ -1,5 +1,3 @@
-this_file = __file__
-
 def intersection(st, ave):
     """Represent an intersection using the Cantor pairing function."""
     return (st+ave)*(st+ave+1)//2 + ave
@@ -22,13 +20,13 @@ def taxicab(a, b):
     >>> taxicab(ess_a_bagel, times_square)
     9
     """
-    "*** YOUR CODE HERE ***"
+    return abs(street(a)-street(b)) + abs(avenue(a)-avenue(b))
 
 # Mobiles
 
 def mobile(left, right):
     """Construct a mobile from a left side and a right side."""
-    assert is_side(left), "left must be a side"
+    assert is_side(left), "left must be a side" 
     assert is_side(right), "right must be a side"
     return ['mobile', left, right]
 
@@ -68,12 +66,12 @@ def end(s):
 def weight(size):
     """Construct a weight of some size."""
     assert size > 0
-    "*** YOUR CODE HERE ***"
+    return ['weight',size]
 
 def size(w):
     """Select the size of a weight."""
     assert is_weight(w), 'must call size on a weight'
-    "*** YOUR CODE HERE ***"
+    return w[1]
 
 def is_weight(w):
     """Whether w is a weight."""
@@ -121,7 +119,11 @@ def balanced(m):
     >>> balanced(mobile(side(1, w), side(1, v)))
     False
     """
-    "*** YOUR CODE HERE ***"
+    if is_weight(m):
+        return True
+    return (length(left(m))*total_weight(end(left(m))) == \
+            length(right(m))*total_weight(end(right(m)))) \
+            and balanced(end(left(m))) and balanced(end(right(m)))
 
 def totals_tree(m):
     """Return a tree representing the mobile with its total weight at the root.
