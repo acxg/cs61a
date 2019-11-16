@@ -20,7 +20,15 @@ def make_counter():
     >>> c('b') + c2('b')
     5
     """
-    "*** YOUR CODE HERE ***"
+    dic = {}
+    def counter(x):
+        nonlocal dic
+        if x in dic.keys():
+            dic[x] += 1
+        else:
+            dic[x] = 1
+        return dic[x]
+    return counter
 
 
 class VendingMachine:
@@ -60,7 +68,41 @@ class VendingMachine:
     >>> w.vend()
     'Here is your soda.'
     """
-    "*** YOUR CODE HERE ***"
+    def __init__(self, stuff, price):
+        self.stuff = stuff
+        self.price = price
+        self.stock = 0
+        self.depos = 0
+    
+    def vend(self):
+        if self.stock <= 0:
+            return 'Machine is out of stock.'
+        elif self.depos < self.price:
+            return 'You must deposit ${0} more.'.format(self.price - self.depos)
+        elif self.depos == self.price:
+            self.depos = 0
+            self.stock -= 1
+            return 'Here is your ' + self.stuff + '.'
+        elif self.depos > self.price:
+            temp = self.depos - self.price
+            self.depos = 0
+            self.stock -= 1
+            return 'Here is your {0} and ${1} change.'.format(self.stuff, temp)
+
+    def deposit(self, money):
+        self.depos += money
+        temp = self.depos
+        if self.stock == 0:
+            self.depos = 0
+            return 'Machine is out of stock. Here is your ${0}.'.format(temp)
+        else:
+            return 'Current balance: $' + str(self.depos)
+
+    def restock(self, more):
+        self.stock += more
+        return 'Current {0} stock: {1}'.format(self.stuff, self.stock)
+
+
 
 def preorder(t):
     """Return a list of the entries in this tree in the order that they
@@ -72,7 +114,11 @@ def preorder(t):
     >>> preorder(Tree(2, [Tree(4, [Tree(6)])]))
     [2, 4, 6]
     """
-    "*** YOUR CODE HERE ***"
+    if t.is_leaf():
+        return [t.label]
+    pre = [preorder(b) for b in t.branches]
+    return [t.label].extend(pre) 
+
 
 def store_digits(n):
     """Stores the digits of a positive number n in a linked list.
