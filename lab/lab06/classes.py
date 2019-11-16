@@ -81,7 +81,7 @@ class Player:
         """
         self.deck = deck
         self.name = name
-        self.hand = [self.deck.draw()for _ in range(6)]
+        self.hand = [self.deck.draw() for _ in range(5)]
 
     def draw(self):
         """Draw a card from the player's deck and add it to their hand.
@@ -152,9 +152,8 @@ class TutorCard(Card):
         >>> len(player2.deck.cards) == initial_deck_length - 3
         True
         """
-        "*** YOUR CODE HERE ***"
-        #Uncomment the line below when you've finished implementing this method!
-        #print('{} discarded and re-drew 3 cards!'.format(opponent.name))
+        opponent.hand = [opponent.deck.draw() for _ in range(3)] + opponent.hand[3:]
+        print('{} discarded and re-drew 3 cards!'.format(opponent.name))
 
     def copy(self):
         """
@@ -178,7 +177,7 @@ class TACard(Card):
         >>> other_card.defense
         300
         """
-        "*** YOUR CODE HERE ***"
+        other_card.attack, other_card.defense = other_card.defense, other_card.attack
 
 
     def copy(self):
@@ -209,11 +208,17 @@ class ProfessorCard(Card):
         0
         """
         orig_opponent_deck_length = len(opponent.deck.cards)
-        "*** YOUR CODE HERE ***"
+        for card in player.deck.cards:
+            card.attack += other_card.attack
+            card.defense += other_card.defense
+        copy = opponent.deck.cards[:]
+        for card in copy:
+            if card.attack == other_card.attack or card.defense == other_card.defense or \
+                    card.attack == other_card.defense or card.defense == other_card.attack:
+                opponent.deck.cards.remove(card)
         discarded = orig_opponent_deck_length - len(opponent.deck.cards)
         if discarded:
-            #Uncomment the line below when you've finished implementing this method!
-            #print('{} cards were discarded from {}\'s deck!'.format(discarded, opponent.name))
+            print('{} cards were discarded from {}\'s deck!'.format(discarded, opponent.name))
             return
 
     def copy(self):
