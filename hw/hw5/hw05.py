@@ -114,10 +114,14 @@ def preorder(t):
     >>> preorder(Tree(2, [Tree(4, [Tree(6)])]))
     [2, 4, 6]
     """
-    if t.is_leaf():
+    if t.branches == []:
         return [t.label]
-    pre = [preorder(b) for b in t.branches]
-    return [t.label].extend(pre) 
+    temp = []
+    for br in t.branches:
+        temp += preorder(br)
+    return [t.label] + temp
+
+    
 
 
 def store_digits(n):
@@ -131,7 +135,12 @@ def store_digits(n):
     >>> store_digits(876)
     Link(8, Link(7, Link(6)))
     """
-    "*** YOUR CODE HERE ***"
+    res = Link.empty
+    while n > 0:
+        res = Link(n % 10, res)
+        n //= 10
+    return res
+
 
 def generate_paths(t, x):
     """Yields all possible paths from the root of t to a node with the label x
@@ -168,12 +177,11 @@ def generate_paths(t, x):
     [[0, 2], [0, 2, 1, 2]]
     """
 
-    "*** YOUR CODE HERE ***"
-
-    for _______________ in _________________:
-        for _______________ in _________________:
-
-            "*** YOUR CODE HERE ***"
+    if t.label == x:
+        yield [x]
+    for b in t.branches:
+        for path in generate_paths(b, x):
+            yield [t.label] + path
 
 
 def remove_all(link , value):
@@ -193,7 +201,11 @@ def remove_all(link , value):
     >>> print(l1)
     <0 1>
     """
-    "*** YOUR CODE HERE ***"
+    if link is not Link.empty and link.rest is not Link.empty:
+        remove_all(link.rest, value)
+        if link.rest.first == value:
+            link.rest = link.rest.rest
+
 def deep_map(f, link):
     """Return a Link with the same structure as link but with fn mapped over
     its elements. If an element is an instance of a linked list, recursively
@@ -207,7 +219,9 @@ def deep_map(f, link):
     >>> print(deep_map(lambda x: 2 * x, Link(s, Link(Link(Link(5))))))
     <<2 <4 6> 8> <<10>>>
     """
-    "*** YOUR CODE HERE ***"
+    if link.rest is Link.empty:
+        return Link(f(link.first))
+    return Link(f(link.first), Link(link.rest))
 class Mint:
     """A mint creates coins by stamping on years.
 
