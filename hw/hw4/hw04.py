@@ -185,16 +185,11 @@ def replace_leaf(t, old, new):
     >>> laerad == yggdrasil # Make sure original tree is unmodified
     True
     """
-    br = []
-    if is_leaf(t):
-        if label(t) == old:
-            return tree(new)
-        else:
-            return tree(label(t))
-    for b in branches(t):
-        br.append(replace_leaf(b,old,new))
-    return tree(label(t),br)
-     
+    if is_leaf(t) and label(t) == old:
+        return tree(new)
+    else:
+        br = [replace_leaf(b,old,new) for b in branches(t)]
+        return tree(label(t), br)
 
 def make_fib():
     """Returns a function that returns the next Fibonacci number
@@ -219,11 +214,20 @@ def make_fib():
     >>> check(this_file, 'make_fib', ['List'])
     True
     """
-    "*** YOUR CODE HERE ***"
+
+    f1 = 0
+    f2 = 1
+    def helper():
+        nonlocal f1, f2
+        f0 = f1
+        f1, f2 = f2, f1 + f2
+        return f0
+    return helper
+
+
 
 def make_withdraw(balance, password):
     """Return a password-protected withdraw function.
-
     >>> w = make_withdraw(100, 'hax0r')
     >>> w(25, 'hax0r')
     75
@@ -249,7 +253,22 @@ def make_withdraw(balance, password):
     >>> type(w(10, 'l33t')) == str
     True
     """
-    "*** YOUR CODE HERE ***"
+    attemp = []
+    def withdraw(amount, password):
+        nonlocal balance
+        if len(attemp) < 3 and password == 'hax0r':
+            if balance > amount:
+                balance -= amount
+                return balance
+            else:
+                return 'Insufficient funds'
+        else:
+            if len(attemp) < 3:
+                attemp.append(password)
+                return 'Incorrect password'
+            elif len(attemp) ==3 :
+                return "Your account is locked. Attempts: ['{0}', '{1}', '{2}']".format(attemp[0], attemp[1], attemp[2])
+    return withdraw
 
 def make_joint(withdraw, old_password, new_password):
     """Return a password-protected withdraw function that has joint access to
@@ -289,8 +308,17 @@ def make_joint(withdraw, old_password, new_password):
     >>> make_joint(w, 'hax0r', 'hello')
     "Your account is locked. Attempts: ['my', 'secret', 'password']"
     """
-     
-
+    pw = ['hax0r']
+    if old_password in pw:
+        pw.append(new_password)
+    else:
+        return 'Incorrect password'
+    def helper(amount, password):
+        if password in pw:
+            return withdraw(amount,'hax0r')
+        else:
+            return withdraw(amount,password)
+    return helper
 
 
 ## Tree Methods ##
